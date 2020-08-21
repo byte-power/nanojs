@@ -934,7 +934,7 @@ func (p *Parser) parseSimpleStmt(forIn bool) Stmt {
 	x := p.parseExprList()
 
 	switch p.token {
-	case token.Assign, token.Define: // assignment statement
+	case token.Assign: // assignment statement
 		pos, tok := p.pos, p.token
 		p.next()
 		y := p.parseExprList()
@@ -986,8 +986,7 @@ func (p *Parser) parseSimpleStmt(forIn bool) Stmt {
 	}
 
 	switch p.token {
-	case token.Define,
-		token.AddAssign, token.SubAssign, token.MulAssign, token.QuoAssign,
+	case token.AddAssign, token.SubAssign, token.MulAssign, token.QuoAssign,
 		token.RemAssign, token.AndAssign, token.OrAssign, token.XorAssign,
 		token.ShlAssign, token.ShrAssign, token.AndNotAssign:
 		pos, tok := p.pos, p.token

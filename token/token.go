@@ -54,7 +54,7 @@ const (
 	NotEqual     // !=
 	LessEq       // <=
 	GreaterEq    // >=
-	Define       // :=
+	Define       // =
 	Ellipsis     // ...
 	LParen       // (
 	LBrack       // [
@@ -130,7 +130,7 @@ var tokens = [...]string{
 	NotEqual:     "!=",
 	LessEq:       "<=",
 	GreaterEq:    ">=",
-	Define:       ":=",
+	Define:       "=",
 	Ellipsis:     "...",
 	LParen:       "(",
 	LBrack:       "[",

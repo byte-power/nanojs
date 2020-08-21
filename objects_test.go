@@ -5,7 +5,7 @@ import (
 
 	"github.com/zeaphoo/nanojs/v2"
 	"github.com/zeaphoo/nanojs/v2/require"
-	"github.com/zeaphoo/nanojs/v2/token"
+
 )
 
 func TestObject_TypeName(t *testing.T) {

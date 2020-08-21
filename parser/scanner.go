@@ -123,7 +123,7 @@ func (s *Scanner) Scan() (
 			tok = token.String
 			literal = s.scanRawString()
 		case ':':
-			tok = s.switch2(token.Colon, token.Define)
+			tok = token.Colon
 		case '.':
 			if '0' <= s.ch && s.ch <= '9' {
 				insertSemi = true

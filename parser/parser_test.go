@@ -9,7 +9,7 @@ import (
 
 	. "github.com/zeaphoo/nanojs/v2/parser"
 	"github.com/zeaphoo/nanojs/v2/require"
-	"github.com/zeaphoo/nanojs/v2/token"
+
 )
 
 func TestParserError(t *testing.T) {
@@ -137,15 +137,6 @@ func TestParseAssignment(t *testing.T) {
 				p(1, 3)))
 	})
 
-	expectParse(t, "a := 5", func(p pfn) []Stmt {
-		return stmts(
-			assignStmt(
-				exprs(ident("a", p(1, 1))),
-				exprs(intLit(5, p(1, 6))),
-				token.Define,
-				p(1, 3)))
-	})
-
 	expectParse(t, "a, b = 5, 10", func(p pfn) []Stmt {
 		return stmts(
 			assignStmt(
@@ -156,19 +147,6 @@ func TestParseAssignment(t *testing.T) {
 					intLit(5, p(1, 8)),
 					intLit(10, p(1, 11))),
 				token.Assign,
-				p(1, 6)))
-	})
-
-	expectParse(t, "a, b := 5, 10", func(p pfn) []Stmt {
-		return stmts(
-			assignStmt(
-				exprs(
-					ident("a", p(1, 1)),
-					ident("b", p(1, 4))),
-				exprs(
-					intLit(5, p(1, 9)),
-					intLit(10, p(1, 12))),
-				token.Define,
 				p(1, 6)))
 	})
 
@@ -511,13 +489,13 @@ func TestParseError(t *testing.T) {
 				errorExpr(p(1, 1), intLit(1234, p(1, 7)), p(1, 6), p(1, 11))))
 	})
 
-	expectParse(t, `err1 := error("some error")`, func(p pfn) []Stmt {
+	expectParse(t, `err1 = error("some error")`, func(p pfn) []Stmt {
 		return stmts(
 			assignStmt(
 				exprs(ident("err1", p(1, 1))),
 				exprs(errorExpr(p(1, 9),
 					stringLit("some error", p(1, 15)), p(1, 14), p(1, 27))),
-				token.Define, p(1, 6)))
+				token.Assign, p(1, 6)))
 	})
 
 	expectParse(t, `return error("some error")`, func(p pfn) []Stmt {
@@ -622,13 +600,13 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a := 0; a == 5;  {}", func(p pfn) []Stmt {
+	expectParse(t, "for a = 0; a == 5;  {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
 					exprs(ident("a", p(1, 5))),
 					exprs(intLit(0, p(1, 10))),
-					token.Define, p(1, 7)),
+					token.Assign, p(1, 7)),
 				binaryExpr(
 					ident("a", p(1, 13)),
 					intLit(5, p(1, 18)),
@@ -639,13 +617,13 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a := 0; a < 5; a++ {}", func(p pfn) []Stmt {
+	expectParse(t, "for a = 0; a < 5; a++ {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
 					exprs(ident("a", p(1, 5))),
 					exprs(intLit(0, p(1, 10))),
-					token.Define, p(1, 7)),
+					token.Assign, p(1, 7)),
 				binaryExpr(
 					ident("a", p(1, 13)),
 					intLit(5, p(1, 17)),
@@ -674,13 +652,13 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a := 0; ; a++ {}", func(p pfn) []Stmt {
+	expectParse(t, "for a = 0; ; a++ {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
 					exprs(ident("a", p(1, 5))),
 					exprs(intLit(0, p(1, 10))),
-					token.Define, p(1, 7)),
+					token.Assign, p(1, 7)),
 				nil,
 				incDecStmt(
 					ident("a", p(1, 15)),
@@ -957,13 +935,13 @@ if a == 5 {
 				p(2, 1)))
 	})
 
-	expectParse(t, "if a := 3; a < b {}", func(p pfn) []Stmt {
+	expectParse(t, "if a = 3; a < b {}", func(p pfn) []Stmt {
 		return stmts(
 			ifStmt(
 				assignStmt(
 					exprs(ident("a", p(1, 4))),
 					exprs(intLit(3, p(1, 9))),
-					token.Define, p(1, 6)),
+					token.Assign, p(1, 6)),
 				binaryExpr(
 					ident("a", p(1, 12)),
 					ident("b", p(1, 16)),
@@ -998,12 +976,12 @@ if a == 5 {
 }
 
 func TestParseImport(t *testing.T) {
-	expectParse(t, `a := import("mod1")`, func(p pfn) []Stmt {
+	expectParse(t, `a = import("mod1")`, func(p pfn) []Stmt {
 		return stmts(
 			assignStmt(
 				exprs(ident("a", p(1, 1))),
 				exprs(importExpr("mod1", p(1, 6))),
-				token.Define, p(1, 3)))
+				token.Assign, p(1, 3)))
 	})
 
 	expectParse(t, `import("mod1").var1`, func(p pfn) []Stmt {

@@ -12,7 +12,7 @@ import (
 
 	"github.com/zeaphoo/nanojs/v2"
 	"github.com/zeaphoo/nanojs/v2/parser"
-	"github.com/zeaphoo/nanojs/v2/token"
+
 )
 
 // NoError asserts err is not an error.

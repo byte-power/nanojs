@@ -540,21 +540,3 @@ Like Go, Nanojs supports line comments (`//...`) and block comments
 
 a := 5    // line comments
 ```
-
-## Differences from Go
-
-Unlike Go, Nanojs does not have the following:
-
-- Declarations
-- Imaginary values
-- Structs
-- Pointers
-- Channels
-- Goroutines
-- Tuple assignment
-- Variable parameters
-- Switch statement
-- Goto statement
-- Defer statement
-- Panic
-- Type assertion

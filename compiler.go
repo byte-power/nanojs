@@ -654,25 +654,14 @@ func (c *Compiler) compileAssign(
 	ident, selectors := resolveAssignLHS(lhs[0])
 	numSel := len(selectors)
 
-	if op == token.Define && numSel > 0 {
-		// using selector on new variable does not make sense
-		return c.errorf(node, "operator ':=' not allowed with selector")
-	}
+	symbol, _, exists := c.symbolTable.Resolve(ident)
 
-	symbol, depth, exists := c.symbolTable.Resolve(ident)
-	if op == token.Define {
-		if depth == 0 && exists {
-			return c.errorf(node, "'%s' redeclared in this block", ident)
-		}
+	if !exists {
 		symbol = c.symbolTable.Define(ident)
-	} else {
-		if !exists {
-			return c.errorf(node, "unresolved reference '%s'", ident)
-		}
 	}
 
 	// +=, -=, *=, /=
-	if op != token.Assign && op != token.Define {
+	if op != token.Assign {
 		if err := c.Compile(lhs[0]); err != nil {
 			return err
 		}
@@ -728,7 +717,7 @@ func (c *Compiler) compileAssign(
 		if numSel > 0 {
 			c.emit(node, parser.OpSetSelLocal, symbol.Index, numSel)
 		} else {
-			if op == token.Define && !symbol.LocalAssigned {
+			if !symbol.LocalAssigned {
 				c.emit(node, parser.OpDefineLocal, symbol.Index)
 			} else {
 				c.emit(node, parser.OpSetLocal, symbol.Index)
