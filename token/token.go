@@ -82,6 +82,7 @@ const (
 	True
 	False
 	In
+	Of
 	Undefined
 	Import
 	_keywordEnd
@@ -147,7 +148,7 @@ var tokens = [...]string{
 	Continue:     "continue",
 	Else:         "else",
 	For:          "for",
-	Func:         "func",
+	Func:         "function",
 	Error:        "error",
 	Immutable:    "immutable",
 	If:           "if",
@@ -156,6 +157,7 @@ var tokens = [...]string{
 	True:         "true",
 	False:        "false",
 	In:           "in",
+	Of:			  "of",
 	Undefined:    "undefined",
 	Import:       "import",
 }

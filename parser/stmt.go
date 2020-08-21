@@ -196,7 +196,6 @@ func (s *ExprStmt) String() string {
 type ForInStmt struct {
 	ForPos   Pos
 	Key      *Ident
-	Value    *Ident
 	Iterable Expr
 	Body     *BlockStmt
 }
@@ -214,12 +213,33 @@ func (s *ForInStmt) End() Pos {
 }
 
 func (s *ForInStmt) String() string {
-	if s.Value != nil {
-		return "for " + s.Key.String() + ", " + s.Value.String() +
-			" in " + s.Iterable.String() + " " + s.Body.String()
-	}
-	return "for " + s.Key.String() + " in " + s.Iterable.String() +
-		" " + s.Body.String()
+	return "for (" + s.Key.String() +
+			" in " + s.Iterable.String() + ") " + s.Body.String()
+}
+
+// ForOfStmt represents a for-of statement.
+type ForOfStmt struct {
+	ForPos   Pos
+	Key      *Ident
+	Iterable Expr
+	Body     *BlockStmt
+}
+
+func (s *ForOfStmt) stmtNode() {}
+
+// Pos returns the position of first character belonging to the node.
+func (s *ForOfStmt) Pos() Pos {
+	return s.ForPos
+}
+
+// End returns the position of first character immediately after the node.
+func (s *ForOfStmt) End() Pos {
+	return s.Body.End()
+}
+
+func (s *ForOfStmt) String() string {
+	return "for (" + s.Key.String() + " of " + s.Iterable.String() +
+		") " + s.Body.String()
 }
 
 // ForStmt represents a for statement.

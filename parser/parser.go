@@ -722,6 +722,8 @@ func (p *Parser) parseForStmt() Stmt {
 	prevLevel := p.exprLevel
 	p.exprLevel = -1
 
+	_ = p.expect(token.LParen)
+
 	var s1 Stmt
 	if p.token != token.Semicolon { // skipping init
 		s1 = p.parseSimpleStmt(true)
@@ -949,32 +951,18 @@ func (p *Parser) parseSimpleStmt(forIn bool) Stmt {
 			p.next()
 			y := p.parseExpr()
 
-			var key, value *Ident
+			var key *Ident
 			var ok bool
 			switch len(x) {
 			case 1:
-				key = &Ident{Name: "_", NamePos: x[0].Pos()}
-
-				value, ok = x[0].(*Ident)
-				if !ok {
-					p.errorExpected(x[0].Pos(), "identifier")
-					value = &Ident{Name: "_", NamePos: x[0].Pos()}
-				}
-			case 2:
 				key, ok = x[0].(*Ident)
 				if !ok {
 					p.errorExpected(x[0].Pos(), "identifier")
 					key = &Ident{Name: "_", NamePos: x[0].Pos()}
 				}
-				value, ok = x[1].(*Ident)
-				if !ok {
-					p.errorExpected(x[1].Pos(), "identifier")
-					value = &Ident{Name: "_", NamePos: x[1].Pos()}
-				}
 			}
 			return &ForInStmt{
 				Key:      key,
-				Value:    value,
 				Iterable: y,
 			}
 		}
