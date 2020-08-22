@@ -893,23 +893,6 @@ func (c *Compiler) compileForInStmt(stmt *parser.ForInStmt) error {
 		}
 	}
 
-	// assign value variable
-	if stmt.Value.Name != "_" {
-		valueSymbol := c.symbolTable.Define(stmt.Value.Name)
-		if itSymbol.Scope == ScopeGlobal {
-			c.emit(stmt, parser.OpGetGlobal, itSymbol.Index)
-		} else {
-			c.emit(stmt, parser.OpGetLocal, itSymbol.Index)
-		}
-		c.emit(stmt, parser.OpIteratorValue)
-		if valueSymbol.Scope == ScopeGlobal {
-			c.emit(stmt, parser.OpSetGlobal, valueSymbol.Index)
-		} else {
-			valueSymbol.LocalAssigned = true
-			c.emit(stmt, parser.OpDefineLocal, valueSymbol.Index)
-		}
-	}
-
 	// body statement
 	if err := c.Compile(stmt.Body); err != nil {
 		c.leaveLoop()

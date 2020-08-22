@@ -729,18 +729,18 @@ func (p *Parser) parseForStmt() Stmt {
 		s1 = p.parseSimpleStmt(true)
 	}
 
-	// for _ in seq {}            or
-	// for value in seq {}        or
-	// for key, value in seq {}
+	// for (_ in seq) {}            or
+	// for (value in seq) {}
 	if forInStmt, isForIn := s1.(*ForInStmt); isForIn {
 		forInStmt.ForPos = pos
 		p.exprLevel = prevLevel
+		p.expect(token.RParen)
 		forInStmt.Body = p.parseBlockStmt()
 		p.expectSemi()
 		return forInStmt
 	}
 
-	// for init; cond; post {}
+	// for (init; cond; post) {}
 	var s2, s3 Stmt
 	if p.token == token.Semicolon {
 		p.next()
@@ -748,13 +748,15 @@ func (p *Parser) parseForStmt() Stmt {
 			s2 = p.parseSimpleStmt(false) // cond
 		}
 		p.expect(token.Semicolon)
-		if p.token != token.LBrace {
+		if p.token != token.RParen {
 			s3 = p.parseSimpleStmt(false) // post
 		}
+		p.expect(token.LBrace)
 	} else {
-		// for cond {}
+		// for(cond) {}
 		s2 = s1
 		s1 = nil
+		p.expect(token.RParen)
 	}
 
 	// body

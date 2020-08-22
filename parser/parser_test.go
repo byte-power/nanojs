@@ -9,7 +9,7 @@ import (
 
 	. "github.com/zeaphoo/nanojs/v2/parser"
 	"github.com/zeaphoo/nanojs/v2/require"
-
+	"github.com/zeaphoo/nanojs/v2/token"
 )
 
 func TestParserError(t *testing.T) {
@@ -523,7 +523,6 @@ func TestParseForIn(t *testing.T) {
 	expectParse(t, "for x in y {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
-				ident("_", p(1, 5)),
 				ident("x", p(1, 5)),
 				ident("y", p(1, 10)),
 				blockStmt(p(1, 12), p(1, 13)),
@@ -534,7 +533,6 @@ func TestParseForIn(t *testing.T) {
 		return stmts(
 			forInStmt(
 				ident("_", p(1, 5)),
-				ident("_", p(1, 5)),
 				ident("y", p(1, 10)),
 				blockStmt(p(1, 12), p(1, 13)),
 				p(1, 1)))
@@ -543,7 +541,6 @@ func TestParseForIn(t *testing.T) {
 	expectParse(t, "for x in [1, 2, 3] {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
-				ident("_", p(1, 5)),
 				ident("x", p(1, 5)),
 				arrayLit(
 					p(1, 10), p(1, 18),
@@ -554,21 +551,19 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for x, y in z {}", func(p pfn) []Stmt {
+	expectParse(t, "for (x in z) {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
-				ident("y", p(1, 8)),
 				ident("z", p(1, 13)),
 				blockStmt(p(1, 15), p(1, 16)),
 				p(1, 1)))
 	})
 
-	expectParse(t, "for x, y in {k1: 1, k2: 2} {}", func(p pfn) []Stmt {
+	expectParse(t, "for (x in {k1: 1, k2: 2}) {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
-				ident("y", p(1, 8)),
 				mapLit(
 					p(1, 13), p(1, 26),
 					mapElementLit(
@@ -586,7 +581,7 @@ func TestParseFor(t *testing.T) {
 			forStmt(nil, nil, nil, blockStmt(p(1, 5), p(1, 6)), p(1, 1)))
 	})
 
-	expectParse(t, "for a == 5 {}", func(p pfn) []Stmt {
+	expectParse(t, "for (a == 5) {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				nil,
@@ -600,7 +595,7 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a = 0; a == 5;  {}", func(p pfn) []Stmt {
+	expectParse(t, "for (a = 0; a == 5;)  {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
@@ -617,7 +612,7 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a = 0; a < 5; a++ {}", func(p pfn) []Stmt {
+	expectParse(t, "for (a = 0; a < 5; a++) {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
@@ -636,7 +631,7 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for ; a < 5; a++ {}", func(p pfn) []Stmt {
+	expectParse(t, "for (; a < 5; a++) {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				nil,
@@ -652,7 +647,7 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a = 0; ; a++ {}", func(p pfn) []Stmt {
+	expectParse(t, "for (a = 0; ; a++) {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
@@ -667,7 +662,7 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for a == 5 && b != 4 {}", func(p pfn) []Stmt {
+	expectParse(t, "for (a == 5 && b != 4) {}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				nil,
@@ -1006,7 +1001,6 @@ func TestParseImport(t *testing.T) {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
-				ident("y", p(1, 8)),
 				importExpr("mod1", p(1, 13)),
 				blockStmt(p(1, 28), p(1, 29)),
 				p(1, 1)))
@@ -1613,13 +1607,13 @@ func forStmt(
 }
 
 func forInStmt(
-	key, value *Ident,
+	key *Ident,
 	seq Expr,
 	body *BlockStmt,
 	pos Pos,
 ) *ForInStmt {
 	return &ForInStmt{
-		Key: key, Value: value, Iterable: seq, Body: body, ForPos: pos,
+		Key: key, Iterable: seq, Body: body, ForPos: pos,
 	}
 }
 
@@ -1844,8 +1838,6 @@ func equalStmt(t *testing.T, expected, actual Stmt) {
 	case *ForInStmt:
 		equalExpr(t, expected.Key,
 			actual.(*ForInStmt).Key)
-		equalExpr(t, expected.Value,
-			actual.(*ForInStmt).Value)
 		equalExpr(t, expected.Iterable,
 			actual.(*ForInStmt).Iterable)
 		equalStmt(t, expected.Body,

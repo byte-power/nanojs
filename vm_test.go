@@ -14,7 +14,7 @@ import (
 	"github.com/zeaphoo/nanojs/v2/parser"
 	"github.com/zeaphoo/nanojs/v2/require"
 	"github.com/zeaphoo/nanojs/v2/stdlib"
-
+	"github.com/zeaphoo/nanojs/v2/token"
 )
 
 const testOut = "out"

@@ -13,7 +13,7 @@ import (
 	"github.com/zeaphoo/nanojs/v2"
 	"github.com/zeaphoo/nanojs/v2/require"
 	"github.com/zeaphoo/nanojs/v2/stdlib"
-
+	"github.com/zeaphoo/nanojs/v2/token"
 )
 
 func TestScript_Add(t *testing.T) {
