@@ -751,6 +751,7 @@ func (p *Parser) parseForStmt() Stmt {
 		if p.token != token.RParen {
 			s3 = p.parseSimpleStmt(false) // post
 		}
+		p.expect(token.RParen)
 		p.expect(token.LBrace)
 	} else {
 		// for(cond) {}

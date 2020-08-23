@@ -586,12 +586,12 @@ func TestParseFor(t *testing.T) {
 			forStmt(
 				nil,
 				binaryExpr(
-					ident("a", p(1, 5)),
-					intLit(5, p(1, 10)),
+					ident("a", p(1, 6)),
+					intLit(5, p(1, 11)),
 					token.Equal,
-					p(1, 7)),
+					p(1, 8)),
 				nil,
-				blockStmt(p(1, 12), p(1, 13)),
+				blockStmt(p(1, 14), p(1, 15)),
 				p(1, 1)))
 	})
 
