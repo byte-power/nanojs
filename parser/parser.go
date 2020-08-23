@@ -722,7 +722,7 @@ func (p *Parser) parseForStmt() Stmt {
 	prevLevel := p.exprLevel
 	p.exprLevel = -1
 
-	_ = p.expect(token.LParen)
+	p.expect(token.LParen)
 
 	var s1 Stmt
 	if p.token != token.Semicolon { // skipping init
@@ -752,7 +752,6 @@ func (p *Parser) parseForStmt() Stmt {
 			s3 = p.parseSimpleStmt(false) // post
 		}
 		p.expect(token.RParen)
-		p.expect(token.LBrace)
 	} else {
 		// for(cond) {}
 		s2 = s1

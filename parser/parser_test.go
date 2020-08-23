@@ -520,7 +520,7 @@ func TestParseError(t *testing.T) {
 }
 
 func TestParseForIn(t *testing.T) {
-	expectParse(t, "for x in y {}", func(p pfn) []Stmt {
+	expectParse(t, "for (x in y) {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
@@ -529,7 +529,7 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for _ in y {}", func(p pfn) []Stmt {
+	expectParse(t, "for (_ in y) {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("_", p(1, 5)),
@@ -538,7 +538,7 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for x in [1, 2, 3] {}", func(p pfn) []Stmt {
+	expectParse(t, "for (x in [1, 2, 3]) {}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
@@ -599,16 +599,16 @@ func TestParseFor(t *testing.T) {
 		return stmts(
 			forStmt(
 				assignStmt(
-					exprs(ident("a", p(1, 5))),
+					exprs(ident("a", p(1, 6))),
 					exprs(intLit(0, p(1, 10))),
-					token.Assign, p(1, 7)),
+					token.Assign, p(1, 8)),
 				binaryExpr(
 					ident("a", p(1, 13)),
 					intLit(5, p(1, 18)),
 					token.Equal,
 					p(1, 15)),
 				nil,
-				blockStmt(p(1, 22), p(1, 23)),
+				blockStmt(p(1, 23), p(1, 24)),
 				p(1, 1)))
 	})
 
@@ -616,9 +616,9 @@ func TestParseFor(t *testing.T) {
 		return stmts(
 			forStmt(
 				assignStmt(
-					exprs(ident("a", p(1, 5))),
+					exprs(ident("a", p(1, 6))),
 					exprs(intLit(0, p(1, 10))),
-					token.Assign, p(1, 7)),
+					token.Assign, p(1, 8)),
 				binaryExpr(
 					ident("a", p(1, 13)),
 					intLit(5, p(1, 17)),
@@ -627,11 +627,11 @@ func TestParseFor(t *testing.T) {
 				incDecStmt(
 					ident("a", p(1, 20)),
 					token.Inc, p(1, 21)),
-				blockStmt(p(1, 24), p(1, 25)),
+				blockStmt(p(1, 25), p(1, 26)),
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (; a < 5; a++) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(; a < 5; a++){}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				nil,
@@ -647,22 +647,22 @@ func TestParseFor(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (a = 0; ; a++) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(a = 0; ; a++){}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				assignStmt(
 					exprs(ident("a", p(1, 5))),
-					exprs(intLit(0, p(1, 10))),
+					exprs(intLit(0, p(1, 9))),
 					token.Assign, p(1, 7)),
 				nil,
 				incDecStmt(
-					ident("a", p(1, 15)),
-					token.Inc, p(1, 16)),
-				blockStmt(p(1, 19), p(1, 20)),
+					ident("a", p(1, 14)),
+					token.Inc, p(1, 15)),
+				blockStmt(p(1, 18), p(1, 19)),
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (a == 5 && b != 4) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(a == 5 && b != 4){}", func(p pfn) []Stmt {
 		return stmts(
 			forStmt(
 				nil,
