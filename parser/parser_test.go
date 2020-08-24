@@ -520,7 +520,7 @@ func TestParseError(t *testing.T) {
 }
 
 func TestParseForIn(t *testing.T) {
-	expectParse(t, "for (x in y) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(x in y){}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
@@ -529,7 +529,7 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (_ in y) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(_ in y){}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("_", p(1, 5)),
@@ -538,7 +538,7 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (x in [1, 2, 3]) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(x in [1, 2, 3]){}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
@@ -551,26 +551,26 @@ func TestParseForIn(t *testing.T) {
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (x in z) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(x in z){}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
-				ident("z", p(1, 13)),
-				blockStmt(p(1, 15), p(1, 16)),
+				ident("z", p(1, 10)),
+				blockStmt(p(1, 12), p(1, 13)),
 				p(1, 1)))
 	})
 
-	expectParse(t, "for (x in {k1: 1, k2: 2}) {}", func(p pfn) []Stmt {
+	expectParse(t, "for(x in {k1: 1, k2: 2}){}", func(p pfn) []Stmt {
 		return stmts(
 			forInStmt(
 				ident("x", p(1, 5)),
 				mapLit(
-					p(1, 13), p(1, 26),
+					p(1, 10), p(1, 23),
 					mapElementLit(
-						"k1", p(1, 14), p(1, 16), intLit(1, p(1, 18))),
+						"k1", p(1, 11), p(1, 13), intLit(1, p(1, 15))),
 					mapElementLit(
-						"k2", p(1, 21), p(1, 23), intLit(2, p(1, 25)))),
-				blockStmt(p(1, 28), p(1, 29)),
+						"k2", p(1, 18), p(1, 20), intLit(2, p(1, 22)))),
+				blockStmt(p(1, 25), p(1, 26)),
 				p(1, 1)))
 	})
 }
