@@ -157,25 +157,25 @@ func (mod *GoProxy) args(args ...nanojs.Object) (nanojs.Object, error) {
 // different number of parameters.
 // TODO: handle variadic functions.
 var ProxySource = `
- export func(args) {
-	 if is_undefined(args) {
+ export function(args) {
+	 if (is_undefined(args)) {
 		 return
 	 }
-	 callable := args.callable
-	 if is_undefined(callable) {
+	 callable = args.callable
+	 if (is_undefined(callable)) {
 		 return
 	 }
-	 result := args.result
-	 num_params := args.num_params
-	 v := undefined
+	 result = args.result
+	 num_params = args.num_params
+	 v = undefined
 	 // add more else if conditions for different number of parameters.
-	 if num_params == 0 {
+	 if (num_params == 0) {
 		 v = callable()
-	 } else if num_params == 1 {
+	 } else if (num_params == 1) {
 		 v = callable(args.params[0])
-	 } else if num_params == 2 {
+	 } else if (num_params == 2) {
 		 v = callable(args.params[0], args.params[1])
-	 } else if num_params == 3 {
+	 } else if (num_params == 3) {
 		 v = callable(args.params[0], args.params[1], args.params[2])
 	 }
 	 result(v)
@@ -185,19 +185,19 @@ var ProxySource = `
 func main() {
 	src := `
 	 // goproxy and proxy must be imported.
-	 goproxy := import("goproxy")
-	 proxy := import("proxy")
+	 goproxy = import("goproxy")
+	 proxy = import("proxy")
 
-	 global := 0
+	 global = 0
 
-	 callbacks := {
-		 sum: func(a, b) {
+	 callbacks = {
+		 sum: function(a, b) {
 			 return a + b
 		 },
-		 multiply: func(a, b) {
+		 multiply: function(a, b) {
 			 return a * b
 		 },
-		 increment: func() {
+		 increment: function() {
 			 global++
 			 return global
 		 }
@@ -208,7 +208,7 @@ func main() {
 
 	 // goproxy loop waits for new call requests and run them with the help of
 	 // "proxy" source module. Cancelling the context breaks the loop.
-	 for goproxy.next() {
+	 for (goproxy.next()) {
 		 proxy(goproxy.args())
 	 }
 `
