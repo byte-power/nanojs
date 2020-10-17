@@ -64,6 +64,11 @@ func (v *VM) Abort() {
 	atomic.StoreInt64(&v.aborting, 1)
 }
 
+// StackTop return top object in stack.
+func (v *VM) StackTop() Object {
+	return v.stack[0]
+}
+
 // Run starts the execution.
 func (v *VM) Run() (err error) {
 	// reset VM states

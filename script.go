@@ -324,3 +324,85 @@ func (c *Compiled) Set(name string, value interface{}) error {
 	c.globals[idx] = obj
 	return nil
 }
+
+// Expression is a limited Script, it can compile and run expression and return result of expression.
+type Expression struct {
+	script *Script
+}
+
+// NewExpression make new Expression with input expression.
+func NewExpression(input []byte) *Expression {
+	return &Expression{script: NewScript(input)}
+}
+
+// Compile compiles the expression with all the defined variables.
+func (expr *Expression) Compile() (compiledExpr *CompiledExpression, err error) {
+	compiled, err := expr.script.Compile()
+	if err != nil {
+		return
+	}
+	// TODO: check prohibits like function defined
+	compiledExpr = &CompiledExpression{compiled: compiled}
+	return
+}
+
+// Add adds a new variable or updates an existing variable to the expression.
+func (expr *Expression) Add(name string, value interface{}) error {
+	obj, err := FromInterface(value)
+	if err != nil {
+		return err
+	}
+	expr.script.variables[name] = &Variable{
+		name:  name,
+		value: obj,
+	}
+	return nil
+}
+
+// Remove removes (undefines) an existing variable for the expression.
+//
+// - Returns: false if the variable name is not defined.
+func (expr *Expression) Remove(name string) bool {
+	if _, ok := expr.script.variables[name]; !ok {
+		return false
+	}
+	delete(expr.script.variables, name)
+	return true
+}
+
+// SetImports sets import modules.
+func (expr *Expression) SetImports(modules *ModuleMap) {
+	expr.script.modules = modules
+}
+
+// CompiledExpression is a compiled instance of the user expression.
+//
+// Use Expression.Compile() to create Compiled object.
+type CompiledExpression struct {
+	compiled *Compiled
+}
+
+// Run executes the compiled expression in the virtual machine.
+func (c *CompiledExpression) Run() (ret Object, err error) {
+	c.compiled.lock.Lock()
+	defer c.compiled.Clone().lock.Unlock()
+
+	v := NewVM(c.compiled.bytecode, c.compiled.globals, c.compiled.maxAllocs)
+	err = v.Run()
+	ret = v.StackTop()
+	return
+}
+
+// Clone creates a new copy of Compiled.
+//
+// Cloned copies are safe for concurrent use by multiple goroutines.
+func (c *CompiledExpression) Clone() *CompiledExpression {
+	return &CompiledExpression{compiled: c.compiled.Clone()}
+}
+
+// Set replaces the value of a global variable identified by the name.
+//
+// An error will be returned if the name was not defined during compilation.
+func (c *CompiledExpression) Set(name string, value interface{}) error {
+	return c.compiled.Set(name, value)
+}
