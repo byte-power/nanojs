@@ -64,9 +64,13 @@ func (v *VM) Abort() {
 	atomic.StoreInt64(&v.aborting, 1)
 }
 
-// StackTop return top object in stack.
+// StackTop return copied top object in stack.
 func (v *VM) StackTop() Object {
-	return v.stack[0]
+	top := v.stack[0]
+	if top == nil {
+		return nil
+	}
+	return top.Copy()
 }
 
 // Run starts the execution.
