@@ -20,13 +20,16 @@ type frame struct {
 type VM struct {
 	constants   []Object
 	stack       [StackSize]Object
+	// stack position
 	sp          int
 	globals     []Object
 	fileSet     *parser.SourceFileSet
 	frames      [MaxFrames]frame
 	framesIndex int
 	curFrame    *frame
+	// current instructions
 	curInsts    []byte
+	// accessing position in curInsts
 	ip          int
 	aborting    int64
 	maxAllocs   int64
@@ -71,6 +74,26 @@ func (v *VM) StackTop() Object {
 		return nil
 	}
 	return top.Copy()
+}
+
+// RunOnProtectMode starts the execution with copied globals. The copied one would be dropped after execute.
+func (v *VM) RunOnProtectMode() error {
+	originGlobals := v.globals
+	defer func () {
+		v.globals = originGlobals
+	}()
+	copiedGlobals := make([]Object, len(originGlobals))
+	for i, value := range originGlobals {
+		if value != nil {
+			copied := value.Copy()
+			if copied == nil {
+				copied = value
+			}
+			copiedGlobals[i] = copied
+		}
+	}
+	v.globals = copiedGlobals
+	return v.Run()
 }
 
 // Run starts the execution.

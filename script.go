@@ -200,6 +200,7 @@ type Compiled struct {
 	globals       []Object
 	maxAllocs     int64
 	lock          sync.RWMutex
+	cachedVM      *VM
 }
 
 // Run executes the compiled script in the virtual machine.
@@ -230,6 +231,31 @@ func (c *Compiled) RunContext(ctx context.Context) (err error) {
 	case err = <-ch:
 	}
 	return
+}
+
+func (c *Compiled) prepareCachedVM() {
+	if c.cachedVM != nil {
+		return
+	}
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	if c.cachedVM == nil {
+		c.cachedVM = NewVM(c.bytecode, c.globals, c.maxAllocs)
+	}
+}
+
+func (c *Compiled) RunOnProtectModeWithCachedVM() error {
+	c.prepareCachedVM()
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	return c.cachedVM.RunOnProtectMode()
+}
+
+func (c *Compiled) RunOnProtectMode() error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	vm := NewVM(c.bytecode, c.globals, c.maxAllocs)
+	return vm.RunOnProtectMode()
 }
 
 // Clone creates a new copy of Compiled. Cloned copies are safe for concurrent
@@ -341,7 +367,14 @@ func (expr *Expression) Compile() (compiledExpr *CompiledExpression, err error) 
 	if err != nil {
 		return
 	}
-	// TODO: check prohibits like function defined
+	// check prohibits like function defined
+	for name := range compiled.globalIndexes {
+		if _, exists := expr.script.variables[name]; exists {
+			continue
+		}
+		err = fmt.Errorf("function or variable are not supported in expression")
+		return
+	}
 	compiledExpr = &CompiledExpression{compiled: compiled}
 	return
 }
@@ -385,11 +418,21 @@ type CompiledExpression struct {
 // Run executes the compiled expression in the virtual machine.
 func (c *CompiledExpression) Run() (ret Object, err error) {
 	c.compiled.lock.Lock()
-	defer c.compiled.Clone().lock.Unlock()
+	defer c.compiled.lock.Unlock()
 
 	v := NewVM(c.compiled.bytecode, c.compiled.globals, c.compiled.maxAllocs)
-	err = v.Run()
+	err = v.RunOnProtectMode()
 	ret = v.StackTop()
+	return
+}
+
+func (c *CompiledExpression) RunWithCachedVM() (ret Object, err error) {
+	c.compiled.prepareCachedVM()
+	c.compiled.lock.Lock()
+	defer c.compiled.lock.Unlock()
+
+	err = c.compiled.cachedVM.RunOnProtectMode()
+	ret = c.compiled.cachedVM.StackTop()
 	return
 }
 
