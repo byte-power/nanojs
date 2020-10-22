@@ -1,7 +1,7 @@
 # Module - "enum"
 
-```golang
-enum := import("enum")
+```js
+var enum = import("enum")
 ```
 
 ## Functions

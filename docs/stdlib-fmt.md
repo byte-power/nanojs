@@ -1,7 +1,7 @@
 # Module - "fmt"
 
-```golang
-fmt := import("fmt")
+```js
+var fmt = import("fmt")
 ```
 
 ## Functions

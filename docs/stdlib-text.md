@@ -1,7 +1,7 @@
 # Module - "text"
 
-```golang
-text := import("text")
+```js
+var text = import("text")
 ```
 
 ## Functions

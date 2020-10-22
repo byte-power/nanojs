@@ -1,7 +1,7 @@
 # Module - "math"
 
 ```golang
-math := import("math")
+var math = import("math")
 ```
 
 ## Constants

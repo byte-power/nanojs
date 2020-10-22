@@ -6,16 +6,16 @@
 Nanojs is **[fast](#benchmark)** and secure because it's compiled/executed as
 bytecode on stack-based VM that's written in native Go.
 
-```golang
+```js
 /* The Nanojs Language */
-fmt := import("fmt")
+var fmt = import("fmt")
 
-each := func(seq, fn) {
-    for x in seq { fn(x) }
+var each = function(seq, fn) {
+    for (x in seq) { fn(x) }
 }
 
-sum := func(init, seq) {
-    each(seq, func(x) { init += x })
+var sum = function(init, seq) {
+    each(seq, function(x) { init += x })
     return init
 }
 
@@ -58,13 +58,13 @@ import (
 func main() {
 	// Nanojs script code
 	src := `
-each := func(seq, fn) {
-    for x in seq { fn(x) }
+var each = function(seq, fn) {
+    for (var x in seq) { fn(x) }
 }
 
-sum := 0
-mul := 1
-each([a, b, c, d], func(x) {
+var sum = 0
+var mul = 1
+each([a, b, c, d], function(x) {
 	sum += x
 	mul *= x
 })`

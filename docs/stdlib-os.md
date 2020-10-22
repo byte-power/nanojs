@@ -1,7 +1,7 @@
 # Module - "os"
 
-```golang
-os := import("os")
+```js
+var os = import("os")
 ```
 
 ## Constants
@@ -119,8 +119,8 @@ os := import("os")
 
 ## File
 
-```golang
-file := os.create("myfile")
+```js
+var file = os.create("myfile")
 file.write_string("some data")
 file.close()
 ```
@@ -146,8 +146,8 @@ file.close()
 
 ## Process
 
-```golang
-proc := start_process("app", ["arg1", "arg2"], "dir", [])
+```js
+var proc = start_process("app", ["arg1", "arg2"], "dir", [])
 proc.wait()
 ```
 
@@ -160,10 +160,10 @@ proc.wait()
 
 ## ProcessState
 
-```golang
-proc := start_process("app", ["arg1", "arg2"], "dir", [])
-stat := proc.wait()
-pid := stat.pid()
+```js
+var proc = start_process("app", ["arg1", "arg2"], "dir", [])
+var stat = proc.wait()
+var pid = stat.pid()
 ```
 
 - `exited() => bool`: reports whether the program has exited.
@@ -172,9 +172,9 @@ pid := stat.pid()
 - `success() => bool`: reports whether the program exited successfully, such as
   with exit status 0 on Unix.
 
-```golang
-cmd := exec.command("echo", ["foo", "bar"])
-output := cmd.output()
+```js
+var cmd = exec.command("echo", ["foo", "bar"])
+var output = cmd.output()
 ```
 
 ## FileInfo

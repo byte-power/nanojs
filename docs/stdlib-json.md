@@ -1,7 +1,7 @@
 # Module - "json"
 
-```golang
-json := import("json")
+```js
+var json = import("json")
 ```
 
 ## Functions
@@ -18,12 +18,12 @@ json := import("json")
 
 ## Examples
 
-```golang
-json := import("json")
+```js
+var json = import("json")
 
-encoded := json.encode({a: 1, b: [2, 3, 4]})  // JSON-encoded bytes string
-indentded := json.indent(encoded)             // indented form
-html_safe := json.html_escape(encoded)        // HTML escaped form
+var encoded = json.encode({a: 1, b: [2, 3, 4]})  // JSON-encoded bytes string
+var indentded = json.indent(encoded)             // indented form
+var html_safe = json.html_escape(encoded)        // HTML escaped form
 
-decoded := json.decode(encoded)               // {a: 1, b: [2, 3, 4]}
+var decoded = json.decode(encoded)               // {a: 1, b: [2, 3, 4]}
 ```

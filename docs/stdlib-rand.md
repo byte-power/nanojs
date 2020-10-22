@@ -1,7 +1,7 @@
 # Module - "rand"
 
-```golang
-rand := import("rand")
+```js
+var rand = import("rand")
 ```
 
 ## Functions

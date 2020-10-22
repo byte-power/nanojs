@@ -6,9 +6,9 @@ Returns a formatted string. The first argument must be a String object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/formatting.md) for more
 details on formatting.
 
-```golang
-a := [1, 2, 3]
-s := format("Foo: %v", a) // s == "Foo: [1, 2, 3]"
+```js
+var a = [1, 2, 3]
+var s = format("Foo: %v", a) // s == "Foo: [1, 2, 3]"
 ```
 
 ## len
@@ -16,9 +16,9 @@ s := format("Foo: %v", a) // s == "Foo: [1, 2, 3]"
 Returns the number of elements if the given variable is array, string, map, or
 module map.
 
-```golang
-v := [1, 2, 3]
-l := len(v) // l == 3
+```js
+var v = [1, 2, 3]
+var l = len(v) // l == 3
 ```
 
 ## copy
@@ -26,10 +26,10 @@ l := len(v) // l == 3
 Creates a copy of the given variable. `copy` function calls `Object.Copy`
 interface method, which is expected to return a deep-copy of the value it holds.
 
-```golang
-v1 := [1, 2, 3]
-v2 := v1
-v3 := copy(v1)
+```js
+var v1 = [1, 2, 3]
+var v2 = v1
+var v3 = copy(v1)
 v1[1] = 0
 print(v2[1]) // "0"; 'v1' and 'v2' referencing the same array
 print(v3[1]) // "2"; 'v3' not affected by 'v1'
@@ -40,8 +40,8 @@ print(v3[1]) // "2"; 'v3' not affected by 'v1'
 Appends object(s) to an array (first argument) and returns a new array object.
 (Like Go's `append` builtin.) Currently, this function takes array type only.
 
-```golang
-v := [1]
+```js
+var v = [1]
 v = append(v, 2, 3) // v == [1, 2, 3]
 ```
 
@@ -52,17 +52,17 @@ First argument must be a map type and second argument must be a string type.
 (Like Go's `delete` builtin except keys are always string).
 `delete` returns `undefined` value if successful and it mutates given map.
 
-```golang
-v := {key: "value"}
+```js
+var v = {key: "value"}
 delete(v, "key") // v == {}
 ```
 
-```golang
-v := {key: "value"}
+```js
+var v = {key: "value"}
 delete(v, "missing") // v == {"key": "value"}
 ```
 
-```golang
+```js
 delete({}) // runtime error, second argument is missing
 delete({}, 1) // runtime error, second argument must be a string type
 ```
@@ -80,57 +80,57 @@ Usage:
 
 `deleted_items := splice(array[, start[, delete_count[, item1[, item2[, ...]]]])`
 
-```golang
-v := [1, 2, 3]
-items := splice(v, 0) // items == [1, 2, 3], v == []
+```js
+var v = [1, 2, 3]
+var items = splice(v, 0) // items == [1, 2, 3], v == []
 ```
 
-```golang
-v := [1, 2, 3]
-items := splice(v, 1) // items == [2, 3], v == [1]
+```js
+var v = [1, 2, 3]
+var items = splice(v, 1) // items == [2, 3], v == [1]
 ```
 
-```golang
-v := [1, 2, 3]
-items := splice(v, 0, 1) // items == [1], v == [2, 3]
+```js
+var v = [1, 2, 3]
+var items = splice(v, 0, 1) // items == [1], v == [2, 3]
 ```
 
-```golang
+```js
 // deleting
-v := ["a", "b", "c"]
-items := splice(v, 1, 2) // items == ["b", "c"], v == ["a"]
+var v = ["a", "b", "c"]
+var items = splice(v, 1, 2) // items == ["b", "c"], v == ["a"]
 // splice(v, 1, 3) or splice(v, 1, 99) has same effect for this example
 ```
 
-```golang
+```js
 // appending
-v := ["a", "b", "c"]
-items := splice(v, 3, 0, "d", "e") // items == [], v == ["a", "b", "c", "d", "e"]
+var v = ["a", "b", "c"]
+var items = splice(v, 3, 0, "d", "e") // items == [], v == ["a", "b", "c", "d", "e"]
 ```
 
-```golang
+```js
 // replacing
-v := ["a", "b", "c"]
-items := splice(v, 2, 1, "d") // items == ["c"], v == ["a", "b", "d"]
+var v = ["a", "b", "c"]
+var items = splice(v, 2, 1, "d") // items == ["c"], v == ["a", "b", "d"]
 ```
 
-```golang
+```js
 // inserting
-v := ["a", "b", "c"]
-items := splice(v, 0, 0, "d", "e") // items == [], v == ["d", "e", "a", "b", "c"]
+var v = ["a", "b", "c"]
+var items = splice(v, 0, 0, "d", "e") // items == [], v == ["d", "e", "a", "b", "c"]
 ```
 
-```golang
+```js
 // deleting and inserting
-v := ["a", "b", "c"]
-items := splice(v, 1, 1, "d", "e") // items == ["b"], v == ["a", "d", "e", "c"]
+var v = ["a", "b", "c"]
+var items = splice(v, 1, 1, "d", "e") // items == ["b"], v == ["a", "d", "e", "c"]
 ```
 
 ## type_name
 
 Returns the type_name of an object.
 
-```golang
+```js
 type_name(1) // int
 type_name("str") // string
 type_name([1, 2, 3]) // array
@@ -142,16 +142,16 @@ Tries to convert an object to string object. See
 [Runtime Types](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md)
 for more details on type conversion.
 
-```golang
-x := string(123) //  x == "123"
+```js
+var x = string(123) //  x == "123"
 ```
 
 Optionally it can take the second argument, which will be returned if the first
 argument cannot be converted to string. Note that the second argument does not
 have to be string.
 
-```golang
-v = string(undefined, "foo")  // v == "foo"
+```js
+var v = string(undefined, "foo")  // v == "foo"
 v = string(undefined, false)  // v == false
 ```
 
@@ -161,16 +161,16 @@ Tries to convert an object to int object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md)
 for more details on type conversion.
 
-```golang
-v := int("123") //  v == 123
+```js
+var v = int("123") //  v == 123
 ```
 
 Optionally it can take the second argument, which will be returned if the first
 argument cannot be converted to int. Note that the second argument does not have
 to be int.
 
-```golang
-v = int(undefined, 10)    // v == 10
+```js
+var v = int(undefined, 10)    // v == 10
 v = int(undefined, false) // v == false
 ```
 
@@ -180,8 +180,8 @@ Tries to convert an object to bool object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md) for more
 details on type conversion.
 
-```golang
-v := bool(1) //  v == true
+```js
+var v = bool(1) //  v == true
 ```
 
 ## float
@@ -190,16 +190,16 @@ Tries to convert an object to float object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md) for more
 details on type conversion.
 
-```golang
-v := float("19.84") //  v == 19.84
+```js
+var v = float("19.84") //  v == 19.84
 ```
 
 Optionally it can take the second argument, which will be returned if the first
 argument cannot be converted to float. Note that the second argument does not
 have to be float.
 
-```golang
-v = float(undefined, 19.84)    // v == 19.84
+```js
+var v = float(undefined, 19.84)    // v == 19.84
 v = float(undefined, false)    // v == false
 ```
 
@@ -209,16 +209,16 @@ Tries to convert an object to char object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md) for more
 details on type conversion.
 
-```golang
-v := char(89) //  v == 'Y'
+```js
+var v = char(89) //  v == 'Y'
 ```
 
 Optionally it can take the second argument, which will be returned if the first
 argument cannot be converted to float. Note that the second argument does not
 have to be float.
 
-```golang
-v = char(undefined, 'X')    // v == 'X'
+```js
+var v = char(undefined, 'X')    // v == 'X'
 v = char(undefined, false)  // v == false
 ```
 
@@ -228,32 +228,32 @@ Tries to convert an object to bytes object. See
 [this](https://github.com/zeaphoo/nanojs/blob/master/docs/runtime-types.md) for more
 details on type conversion.
 
-```golang
-v := bytes("foo") //  v == [102 111 111]
+```js
+var v = bytes("foo") //  v == [102 111 111]
 ```
 
 Optionally it can take the second argument, which will be returned if the first
 argument cannot be converted to float. Note that the second argument does not
 have to be float.
 
-```golang
-v = bytes(undefined, bytes("foo"))    // v == bytes("foo")
+```js
+var v = bytes(undefined, bytes("foo"))    // v == bytes("foo")
 v = bytes(undefined, false)           // v == false
 ```
 
 If you pass an int to `bytes()` function, it will create a new byte object with
 the given size.
 
-```golang
-v := bytes(100)
+```js
+var v = bytes(100)
 ```
 
 ## time
 
 Tries to convert an object to time value.
 
-```golang
-v := time(1257894000) // 2009-11-10 23:00:00 +0000 UTC
+```js
+var v = time(1257894000) // 2009-11-10 23:00:00 +0000 UTC
 ```
 
 ## is_string

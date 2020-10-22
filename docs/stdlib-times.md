@@ -1,7 +1,7 @@
 # Module - "times"
 
-```golang
-times := import("times")
+```js
+var times = import("times")
 ```
 
 ## Constants

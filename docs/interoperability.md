@@ -29,13 +29,13 @@ input/output variables.
 import "github.com/zeaphoo/nanojs/v2"
 
 var code = `
-reduce := func(seq, fn) {
-    s := 0
-    for x in seq { fn(x, s) }
+var reduce = function(seq, fn) {
+    var s = 0
+    for (x in seq) { fn(x, s) }
     return s
 }
 
-print(reduce([1, 2, 3], func(x, s) { s += x }))
+print(reduce([1, 2, 3], function(x, s) { s += x }))
 `
 
 func main() {
@@ -150,7 +150,7 @@ include any modules by default. You can use this function to include the
 [Standard Library](https://github.com/zeaphoo/nanojs/blob/master/docs/stdlib.md).
 
 ```golang
-s := nanojs.NewScript([]byte(`math := import("math"); a := math.abs(-19.84)`))
+s := nanojs.NewScript([]byte(`var math = import("math"); var a = math.abs(-19.84)`))
 
 s.SetImports(stdlib.GetModuleMap("math"))
 // or, to include all stdlib at once
@@ -161,10 +161,10 @@ You can also include Nanojs's written module using `objects.SourceModule`
 (which implements `objects.Importable`).
 
 ```golang
-s := nanojs.NewScript([]byte(`double := import("double"); a := double(20)`))
+s := nanojs.NewScript([]byte(`var double = import("double"); var a = double(20)`))
 
 mods := nanojs.NewModuleMap()
-mods.AddSourceModule("double", []byte(`export func(x) { return x * 2 }`))
+mods.AddSourceModule("double", []byte(`export function(x) { return x * 2 }`))
 s.SetImports(mods)
 ```
 

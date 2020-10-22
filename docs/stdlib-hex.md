@@ -1,7 +1,7 @@
 # Module - "hex"
 
-```golang
-fmt := import("hex")
+```js
+var hex = import("hex")
 ```
 
 ## Functions
